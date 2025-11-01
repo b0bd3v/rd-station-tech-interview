@@ -21,6 +21,6 @@ group :development, :test do
 end
 
 group :development do
+  gem "annotate", "~> 3.2", require: false
+  gem "dotenv-rails", "~> 3.1"
 end
-
-gem "dotenv-rails", "~> 3.1"

@@ -1,3 +1,12 @@
+# == Schema Information
+#
+# Table name: carts
+#
+#  id          :bigint           not null, primary key
+#  total_price :decimal(17, 2)
+#  created_at  :datetime         not null
+#  updated_at  :datetime         not null
+#
 require 'rails_helper'
 
 RSpec.describe Cart, type: :model do
