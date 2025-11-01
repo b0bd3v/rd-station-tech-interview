@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # == Schema Information
 #
 # Table name: cart_items
@@ -22,5 +24,22 @@
 require 'rails_helper'
 
 RSpec.describe CartItem, type: :model do
-  pending "add some examples to (or delete) #{__FILE__}"
+  let!(:cart) { create(:cart) }
+  let!(:product) { create(:product, price: 20) }
+
+  context 'when validating' do
+    it 'raises when quantity is not greater than 0' do
+      expect do
+        described_class.create!(cart: cart, product: product, quantity: 0)
+      end.to raise_error(ActiveRecord::RecordInvalid, 'Validation failed: Quantity must be greater than 0')
+    end
+  end
+
+  context 'when calculating total price' do
+    it 'calculates total price' do
+      cart_item = described_class.create(cart: cart, product: product, quantity: 2)
+
+      expect(cart_item.total_price).to eq(40)
+    end
+  end
 end

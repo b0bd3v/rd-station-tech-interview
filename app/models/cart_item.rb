@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # == Schema Information
 #
 # Table name: cart_items
@@ -20,6 +22,13 @@
 #  fk_rails_...  (product_id => products.id)
 #
 class CartItem < ApplicationRecord
+  validates :quantity, numericality: { greater_than: 0 }
+  validates :quantity, presence: true
+
   belongs_to :cart
   belongs_to :product
+
+  def total_price
+    quantity * product.price
+  end
 end
