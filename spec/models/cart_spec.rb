@@ -7,9 +7,14 @@
 #  id                  :bigint           not null, primary key
 #  abandoned_at        :datetime
 #  last_interaction_at :datetime
+#  session_token       :string
 #  total_price         :decimal(17, 2)
 #  created_at          :datetime         not null
 #  updated_at          :datetime         not null
+#
+# Indexes
+#
+#  index_carts_on_session_token  (session_token)
 #
 require 'rails_helper'
 
@@ -43,6 +48,18 @@ RSpec.describe Cart, type: :model do
     it 'removes the shopping cart if abandoned for a certain time' do
       shopping_cart.mark_as_abandoned
       expect { shopping_cart.remove_if_abandoned }.to change(described_class, :count).by(-1)
+    end
+  end
+
+  describe 'create_session_token' do
+    let(:shopping_cart) { create(:shopping_cart) }
+
+    it 'creates a session token' do
+      expect(shopping_cart.session_token).to be_present
+    end
+
+    it 'creates a unique session token' do
+      expect(shopping_cart.session_token).not_to eq(create(:shopping_cart).session_token)
     end
   end
 end

@@ -7,14 +7,21 @@
 #  id                  :bigint           not null, primary key
 #  abandoned_at        :datetime
 #  last_interaction_at :datetime
+#  session_token       :string
 #  total_price         :decimal(17, 2)
 #  created_at          :datetime         not null
 #  updated_at          :datetime         not null
+#
+# Indexes
+#
+#  index_carts_on_session_token  (session_token)
 #
 class Cart < ApplicationRecord
   validates :total_price, numericality: { greater_than_or_equal_to: 0 }
 
   has_many :cart_items, dependent: :destroy
+
+  before_create :create_session_token
 
   def mark_as_abandoned
     update(abandoned_at: Time.current)
@@ -26,5 +33,16 @@ class Cart < ApplicationRecord
 
   def abandoned?
     abandoned_at.present?
+  end
+
+  def create_session_token
+    loop do
+      session_token = SecureRandom.hex(16)
+
+      unless Cart.exists?(session_token: session_token)
+        self.session_token = session_token
+        break
+      end
+    end
   end
 end
