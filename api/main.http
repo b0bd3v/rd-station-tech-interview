@@ -8,3 +8,9 @@ Cart-Token: xxxx
   "product_id": 1,
   "quantity": 2
 }
+
+###
+
+GET http://localhost:3000/cart
+Cart-Token: 2fe6206fbed31b7052bd8ea344180b59
+Content-Type: application/json

@@ -3,6 +3,22 @@
 require 'rails_helper'
 
 RSpec.describe '/carts', type: :request do
+  describe 'GET /cart' do
+    let!(:cart) { Cart.create! total_price: 0 }
+
+    before { get '/cart', headers: { 'Cart-Token' => cart.session_token } }
+
+    it 'returns a 200 status code' do
+      expect(response).to have_http_status(200)
+    end
+
+    it 'returns the expected JSON structure' do
+      expect(response.parsed_body).to include('id' => be_a(Integer),
+                                              'products' => be_an(Array),
+                                              'total_price' => be_a(Float))
+    end
+  end
+
   describe 'POST /cart' do
     let(:product) { Product.create(name: 'Test Product', price: 10.0) }
 

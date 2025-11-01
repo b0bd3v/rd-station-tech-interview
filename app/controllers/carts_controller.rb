@@ -1,8 +1,18 @@
 # frozen_string_literal: true
 
 class CartsController < ApplicationController
-  before_action :find_or_create_cart
+  before_action :find_or_create_cart, only: :create
   after_action :cart_token
+
+  def show
+    @cart = Cart.find_by(session_token: request.headers['Cart-Token'])
+
+    if @cart.nil?
+      render json: {}, status: :not_found
+    else
+      render json: @cart, serializer: ::CartSerializer
+    end
+  end
 
   def create
     cart_item = @cart.cart_items.find_by(product_id: item_params[:product_id])

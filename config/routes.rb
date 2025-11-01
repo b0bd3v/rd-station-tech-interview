@@ -10,4 +10,5 @@ Rails.application.routes.draw do
   root 'rails/health#show'
 
   post 'cart' => 'carts#create'
+  get 'cart' => 'carts#show'
 end
