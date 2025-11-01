@@ -2,6 +2,7 @@
 
 class CartsController < ApplicationController
   before_action :find_or_create_cart
+  after_action :cart_token
 
   def create
     cart_item = @cart.cart_items.find_by(product_id: item_params[:product_id])
@@ -16,7 +17,7 @@ class CartsController < ApplicationController
     @cart.total_price = @cart.cart_items.sum(:total_price)
 
     if @cart.save!
-      render :create, status: :created
+      render json: @cart, serializer: ::CartSerializer, status: :created
     else
       render json: cart_item.errors, status: :unprocessable_entity
     end
@@ -28,6 +29,10 @@ class CartsController < ApplicationController
     @cart = Cart.find_by(session_token: request.headers['Cart-Token'])
 
     @cart = Cart.create if @cart.nil?
+  end
+
+  def cart_token
+    response.set_header 'Cart-Token', @cart.session_token
   end
 
   def item_params

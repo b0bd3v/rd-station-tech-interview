@@ -21,7 +21,7 @@ class Cart < ApplicationRecord
 
   has_many :cart_items, dependent: :destroy
 
-  before_create :create_session_token
+  before_validation :create_session_token, on: :create
 
   def mark_as_abandoned
     update(abandoned_at: Time.current)

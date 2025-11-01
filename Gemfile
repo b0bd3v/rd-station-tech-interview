@@ -6,14 +6,15 @@ ruby '3.3.1'
 gem 'bootsnap', require: false
 gem 'pg', '~> 1.1'
 gem 'puma', '>= 5.0'
+gem 'rack-cors'
 gem 'rails', '~> 7.1.3', '>= 7.1.3.2'
 gem 'tzinfo-data', platforms: %i[windows jruby]
-gem 'rack-cors'
 
 gem 'redis', '~> 5.2'
 gem 'sidekiq', '~> 7.2', '>= 7.2.4'
 gem 'sidekiq-scheduler', '~> 5.0', '>= 5.0.3'
 
+gem 'active_model_serializers', '~> 0.10.15'
 gem 'guard'
 gem 'guard-livereload', require: false
 
