@@ -11,18 +11,12 @@
 #  created_at          :datetime         not null
 #  updated_at          :datetime         not null
 #
-class Cart < ApplicationRecord
-  validates :total_price, numericality: { greater_than_or_equal_to: 0 }
+FactoryBot.define do
+  factory :cart do
+    total_price { 0.0 }
+    last_interaction_at { Time.current }
+    abandoned_at { nil }
 
-  def mark_as_abandoned
-    update(abandoned_at: Time.current)
-  end
-
-  def remove_if_abandoned
-    destroy if abandoned?
-  end
-
-  def abandoned?
-    abandoned_at.present?
+    factory :shopping_cart, parent: :cart
   end
 end

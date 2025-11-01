@@ -4,12 +4,18 @@
 #
 # Table name: carts
 #
-#  id          :bigint           not null, primary key
-#  total_price :decimal(17, 2)
-#  created_at  :datetime         not null
-#  updated_at  :datetime         not null
+#  id                  :bigint           not null, primary key
+#  abandoned_at        :datetime
+#  last_interaction_at :datetime
+#  total_price         :decimal(17, 2)
+#  created_at          :datetime         not null
+#  updated_at          :datetime         not null
 #
 require 'rails_helper'
+
+RSpec.configure do |config|
+  config.include FactoryBot::Syntax::Methods
+end
 
 RSpec.describe Cart, type: :model do
   context 'when validating' do
