@@ -8,4 +8,6 @@ Rails.application.routes.draw do
   get 'up' => 'rails/health#show', as: :rails_health_check
 
   root 'rails/health#show'
+
+  post 'cart' => 'carts#create'
 end

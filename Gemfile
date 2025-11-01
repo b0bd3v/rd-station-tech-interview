@@ -8,6 +8,7 @@ gem 'pg', '~> 1.1'
 gem 'puma', '>= 5.0'
 gem 'rails', '~> 7.1.3', '>= 7.1.3.2'
 gem 'tzinfo-data', platforms: %i[windows jruby]
+gem 'rack-cors'
 
 gem 'redis', '~> 5.2'
 gem 'sidekiq', '~> 7.2', '>= 7.2.4'
@@ -20,6 +21,7 @@ group :development, :test do
   gem 'annotate', '~> 3.2', require: false
   gem 'debug', platforms: %i[mri windows]
   gem 'dotenv-rails', '~> 3.1'
+  gem 'faker', '~> 3.5'
   gem 'rspec-rails', '~> 6.1.0'
   gem 'rubocop', require: false
   gem 'rubocop-performance', require: false

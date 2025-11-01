@@ -4,12 +4,13 @@
 #
 # Table name: cart_items
 #
-#  id         :bigint           not null, primary key
-#  quantity   :integer
-#  created_at :datetime         not null
-#  updated_at :datetime         not null
-#  cart_id    :bigint           not null
-#  product_id :bigint           not null
+#  id          :bigint           not null, primary key
+#  quantity    :integer
+#  total_price :float
+#  created_at  :datetime         not null
+#  updated_at  :datetime         not null
+#  cart_id     :bigint           not null
+#  product_id  :bigint           not null
 #
 # Indexes
 #
@@ -28,7 +29,4 @@ class CartItem < ApplicationRecord
   belongs_to :cart
   belongs_to :product
 
-  def total_price
-    quantity * product.price
-  end
 end
