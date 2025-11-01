@@ -14,6 +14,8 @@
 class Cart < ApplicationRecord
   validates :total_price, numericality: { greater_than_or_equal_to: 0 }
 
+  has_many :cart_items, dependent: :destroy
+
   def mark_as_abandoned
     update(abandoned_at: Time.current)
   end
