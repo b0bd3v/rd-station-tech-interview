@@ -1,0 +1,44 @@
+plugins:
+  - rubocop-rails
+  - rubocop-rspec
+  - rubocop-performance
+
+AllCops:
+  NewCops: enable
+  TargetRubyVersion: 3.3
+  Exclude:
+    - 'bin/**/*'
+    - 'db/schema.rb'
+    - 'db/migrate/**/*'
+    - 'log/**/*'
+    - 'node_modules/**/*'
+    - 'tmp/**/*'
+    - 'vendor/**/*'
+
+Rails:
+  Enabled: true
+
+RSpec:
+  Include:
+    - 'spec/**/*_spec.rb'
+
+Layout/LineLength:
+  Max: 120
+
+Style/Documentation:
+  Enabled: false
+
+Metrics/BlockLength:
+  Exclude:
+    - 'Guardfile'
+    - 'lib/tasks/**/*.rake'
+    - 'spec/**/*_spec.rb'
+
+RSpec/MultipleExpectations:
+  Max: 2
+
+RSpec/MultipleMemoizedHelpers:
+  Max: 6
+
+RSpec/ExampleLength:
+  Max: 6

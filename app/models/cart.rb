@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # == Schema Information
 #
 # Table name: carts
@@ -8,9 +10,7 @@
 #  updated_at  :datetime         not null
 #
 class Cart < ApplicationRecord
-  validates_numericality_of :total_price, greater_than_or_equal_to: 0
+  validates :total_price, numericality: { greater_than_or_equal_to: 0 }
 
-  def mark_as_abandoned
-
-  end
+  def mark_as_abandoned; end
 end
