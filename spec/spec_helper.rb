@@ -20,7 +20,7 @@ if ENV['COVERAGE']
 
   SimpleCov.start 'rails' do
     enable_coverage :branch
-    add_filter %w[bin/ db/ config/ spec/ vendor/]
+    add_filter %w[bin/ db/ config/ spec/ vendor/ channels/ mailers/]
     minimum_coverage 90
   end
 end

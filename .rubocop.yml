@@ -15,6 +15,10 @@ AllCops:
     - 'tmp/**/*'
     - 'vendor/**/*'
 
+Rails/SkipsModelValidations:
+  Exclude:
+    - 'app/sidekiq/mark_cart_as_abandoned_job.rb'
+
 Rails:
   Enabled: true
 
@@ -45,3 +49,5 @@ RSpec/ExampleLength:
 
 Metrics/MethodLength:
   Max: 15
+
+

@@ -41,6 +41,8 @@ class CartsController < ApplicationController
     render json: @cart.errors, status: :unprocessable_entity
   rescue ActiveRecord::RecordNotFound
     render json: {}, status: :not_found
+  rescue StandardError => e
+    render json: { error: e.message }, status: :internal_server_error
   end
 
   def remove_item
@@ -55,6 +57,8 @@ class CartsController < ApplicationController
     render json: @cart.errors, status: :unprocessable_entity
   rescue ActiveRecord::RecordNotFound
     render json: {}, status: :not_found
+  rescue StandardError => e
+    render json: { error: e.message }, status: :internal_server_error
   end
 
   private

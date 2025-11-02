@@ -5,8 +5,6 @@ module CartServices
       raise ActiveRecord::RecordNotFound if item.nil?
 
       item.destroy!
-
-      cart.total_price = cart.cart_items.sum(:total_price).round(2)
       cart.last_interaction_at = Time.zone.now
 
       cart.save
