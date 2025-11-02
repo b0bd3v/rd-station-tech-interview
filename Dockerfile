@@ -30,6 +30,9 @@ RUN bundle install && \
 # Copy application code
 COPY . .
 
+RUN chmod +x ops/web_entrypoint.sh
+RUN chmod +x ops/test_entrypoint.sh
+
 # Precompile bootsnap code for faster boot times
 RUN bundle exec bootsnap precompile app/ lib/
 

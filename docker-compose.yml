@@ -16,8 +16,21 @@ services:
         - '6379:6379'
         volumes:
         - redis_data:/data  
-#    web:
-        ## TODO
+    web:
+      build: .
+      entrypoint: ./ops/web_entrypoint.sh
+      volumes:
+        - .:/rails
+        - bundle_cache_web:/usr/local/bundle
+      ports:
+        - "3000:3000"
+      depends_on:
+        - db
+        - redis
+      environment:
+        - DATABASE_URL=postgresql://postgres:password@db:5432/store
+        - RAILS_ENV=development
+        - RAILS_LOG_TO_STDOUT=true
     test:
         build: .
         entrypoint: ./ops/test_entrypoint.sh
@@ -35,3 +48,4 @@ volumes:
     postgres13:
     redis_data:
     bundle_cache_test:
+    bundle_cache_web:
