@@ -20,11 +20,10 @@ services:
         ## TODO
     test:
         build: .
-        command: >
-          bash -lc 'until echo >/dev/tcp/db/5432; do sleep 1; done; bundle exec rails db:prepare && bundle exec rspec'
-#          'bundle exec rspec'
+        entrypoint: ./ops/test_entrypoint.sh
         volumes:
           - .:/rails
+          - bundle_cache_test:/usr/local/bundle
         depends_on:
           - db
           - redis
@@ -35,3 +34,4 @@ services:
 volumes:
     postgres13:
     redis_data:
+    bundle_cache_test:
