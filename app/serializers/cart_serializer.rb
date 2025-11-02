@@ -26,12 +26,12 @@ class CartSerializer < ActiveModel::Serializer
         name: cart_item.product.name,
         quantity: cart_item.quantity,
         unit_price: cart_item.product.price.to_f,
-        total_price: cart_item.total_price
+        total_price: cart_item.total_price.round(2)
       }
     end
   end
 
   def total_price
-    object.cart_items.sum(:total_price)
+    object.cart_items.sum(:total_price).round(2)
   end
 end

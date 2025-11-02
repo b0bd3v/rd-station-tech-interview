@@ -1,0 +1,126 @@
+openapi: 3.1.0
+info:
+  title: Cart API
+  version: 1.0.0
+  description: |
+    API de carrinho
+servers:
+  - url: http://localhost:3000
+paths:
+  /cart:
+    post:
+      summary: Cria um carrinho (sem Cart-Token) ou adiciona item a um carrinho existente (com Cart-Token)
+      tags: [Cart]
+      parameters:
+        - $ref: '#/components/parameters/CartTokenOptional'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddItemRequest'
+            examples:
+              exemplo:
+                value: { product_id: 1, quantity: 2 }
+      responses:
+        '201':
+          description: Carrinho criado ou atualização
+          headers:
+            Cart-Token:
+              description: Token de sessão do carrinho.
+              schema: { type: string }
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Cart' }
+    get:
+      summary: Retorna os dados do carrinho
+      tags: [ Cart ]
+      parameters:
+        - $ref: '#/components/parameters/CartTokenRequired'
+      responses:
+        '200':
+          description: Carrinho atual
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Cart' }
+        '404':
+          description: Carrinho não encontrado para o Cart-Token informado
+  /cart/add_item:
+    post:
+      summary: Adiciona item ao carrinho existente
+      tags: [Cart]
+      parameters:
+        - $ref: '#/components/parameters/CartTokenRequired'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddItemRequest'
+            examples:
+              exemplo:
+                value: { product_id: 2, quantity: 5 }
+      responses:
+        '200':
+          description: Carrinho atualizado
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Cart' }
+  /cart/{product_id}:
+    delete:
+      summary: Remove um item do carrinho usando product_id
+      tags: [Cart]
+      parameters:
+        - $ref: '#/components/parameters/CartTokenRequired'
+        - name: product_id
+          in: path
+          required: true
+          schema: { type: integer, minimum: 1 }
+      responses:
+        '204':
+          description: Item removido
+        '404':
+          description: Item ou carrinho não encontrado
+components:
+  parameters:
+    CartTokenRequired:
+      name: Cart-Token
+      in: header
+      required: true
+      description: Token do carrinho retornado ao criar um novo carrinho.
+      schema: { type: string }
+    CartTokenOptional:
+      name: Cart-Token
+      in: header
+      required: false
+      description: Se informado, o item será adicionado ao carrinho existente.
+      schema: { type: string }
+  schemas:
+    AddItemRequest:
+      type: object
+      required: [product_id, quantity]
+      properties:
+        product_id:
+          type: integer
+          minimum: 1
+        quantity:
+          type: integer
+          minimum: 1
+    CartItem:
+      type: object
+      properties:
+        id: { type: integer }
+        name: { type: string }
+        quantity: { type: integer }
+        unit_price: { type: number, format: float }
+        total_price: { type: number, format: float }
+    Cart:
+      type: object
+      properties:
+        id: { type: integer }
+        products:
+          type: array
+          items: { $ref: '#/components/schemas/CartItem' }
+        total_price:
+          type: number
+          format: float
