@@ -26,3 +26,9 @@ Content-Type: application/json
   "quantity": 5
 }
 
+###
+
+DELETE http://localhost:3000/cart/2
+Cart-Token: 2fe6206fbed31b7052bd8ea344180b59
+Content-Type: application/json
+

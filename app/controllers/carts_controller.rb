@@ -63,6 +63,25 @@ class CartsController < ApplicationController
     end
   end
 
+  def remove_item
+    @cart = Cart.find_by(session_token: request.headers['Cart-Token'])
+
+    return render json: {}, status: :not_found unless @cart
+
+    item = @cart.cart_items.find_by(product_id: item_params[:product_id])
+    return render json: {}, status: :not_found unless item
+
+    item.destroy!
+    @cart.total_price = @cart.cart_items.sum(:total_price)
+    @cart.last_interaction_at = Time.now
+
+    if @cart.save
+      render json: @cart, serializer: ::CartSerializer, status: :created
+    else
+      render json: @cart.errors, status: :unprocessable_entity
+    end
+  end
+
   private
 
   def find_or_create_cart
