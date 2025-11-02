@@ -15,71 +15,46 @@ class CartsController < ApplicationController
   end
 
   def create
-    cart_item = @cart.cart_items.find_by(product_id: item_params[:product_id])
+    product = Product.find(item_params[:product_id])
+    result = CartServices::Create.call(cart: @cart, product: product, quantity: item_params[:quantity])
 
-    if cart_item.nil?
-      cart_item = @cart.cart_items.build(product_id: item_params[:product_id], quantity: item_params[:quantity])
-    else
-      cart_item.quantity = cart_item.quantity + item_params[:quantity]
-    end
-
-    cart_item.total_price = cart_item.quantity * cart_item.product.price
-    @cart.total_price = @cart.cart_items.sum(:total_price)
-
-    if @cart.save
+    if result
       render json: @cart, serializer: ::CartSerializer, status: :created
     else
-      render json: cart_item.errors, status: :unprocessable_entity
+      render json: @cart.errors, status: :unprocessable_entity
     end
+  rescue ActiveRecord::RecordNotFound
+    render json: {}, status: :not_found
+  rescue StandardError => e
+    render json: { error: e.message }, status: :internal_server_error
   end
 
   def add_item
     @cart = Cart.find_by(session_token: request.headers['Cart-Token'])
-    return render json: {}, status: :not_found unless @cart
+    raise ActiveRecord::RecordNotFound unless @cart
 
     product = Product.find(item_params[:product_id])
-    return render json: {}, status: :not_found unless product
+    result = CartServices::AddItem.call(cart: @cart, product: product, quantity: item_params[:quantity])
 
-    item = @cart.cart_items.find_by(product_id: product.id)
+    return render json: @cart, serializer: ::CartSerializer, status: :created if result
 
-    if item
-      item.quantity = item.quantity + item_params[:quantity]
-      item.total_price = item.quantity * item.product.price
-      item.save!
-    else
-      new_item = @cart.cart_items.build(product_id: product.id,
-                                        quantity: item_params[:quantity],
-                                        total_price: item_params[:quantity] * product.price)
-      new_item.save!
-    end
-
-    @cart.total_price = @cart.cart_items.sum(:total_price)
-    @cart.last_interaction_at = Time.now
-
-    if @cart.save
-      render json: @cart, serializer: ::CartSerializer, status: :created
-    else
-      render json: @cart.errors, status: :unprocessable_entity
-    end
+    render json: @cart.errors, status: :unprocessable_entity
+  rescue ActiveRecord::RecordNotFound
+    render json: {}, status: :not_found
   end
 
   def remove_item
     @cart = Cart.find_by(session_token: request.headers['Cart-Token'])
+    raise ActiveRecord::RecordNotFound unless @cart
 
-    return render json: {}, status: :not_found unless @cart
+    product = Product.find(item_params[:product_id])
+    result = CartServices::RemoveItem.call(cart: @cart, product: product)
 
-    item = @cart.cart_items.find_by(product_id: item_params[:product_id])
-    return render json: {}, status: :not_found unless item
+    return render json: @cart, serializer: ::CartSerializer, status: :created if result
 
-    item.destroy!
-    @cart.total_price = @cart.cart_items.sum(:total_price)
-    @cart.last_interaction_at = Time.now
-
-    if @cart.save
-      render json: @cart, serializer: ::CartSerializer, status: :created
-    else
-      render json: @cart.errors, status: :unprocessable_entity
-    end
+    render json: @cart.errors, status: :unprocessable_entity
+  rescue ActiveRecord::RecordNotFound
+    render json: {}, status: :not_found
   end
 
   private
@@ -87,11 +62,14 @@ class CartsController < ApplicationController
   def find_or_create_cart
     @cart = Cart.find_by(session_token: request.headers['Cart-Token'])
 
-    @cart = Cart.create if @cart.nil?
+    if @cart.nil?
+      @cart = Cart.new(total_price: 0)
+      @cart.save!
+    end
   end
 
   def cart_token
-    response.set_header 'Cart-Token', @cart.session_token
+    response.set_header 'Cart-Token', @cart.session_token if @cart
   end
 
   def item_params

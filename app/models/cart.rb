@@ -22,6 +22,7 @@ class Cart < ApplicationRecord
   has_many :cart_items, dependent: :destroy
 
   before_validation :create_session_token, on: :create
+  before_save :update_total_price
 
   def mark_as_abandoned
     update(abandoned_at: Time.current)
@@ -33,6 +34,12 @@ class Cart < ApplicationRecord
 
   def abandoned?
     abandoned_at.present?
+  end
+
+  private
+
+  def update_total_price
+    self.total_price = cart_items.sum(:total_price).round(2)
   end
 
   def create_session_token

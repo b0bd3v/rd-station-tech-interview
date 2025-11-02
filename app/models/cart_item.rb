@@ -28,4 +28,10 @@ class CartItem < ApplicationRecord
 
   belongs_to :cart
   belongs_to :product
+
+  before_validation :update_total_price, on: :create
+
+  def update_total_price
+    self.total_price = quantity * product.price
+  end
 end

@@ -108,5 +108,18 @@ RSpec.describe '/carts', type: :request do
         expect(CartItem.first.total_price).to eq(50.0)
       end
     end
+
+    describe 'DELETE /cart/:id' do
+      let!(:product) { create(:product, name: 'Test Product', price: 10.0) }
+      let!(:cart) { create(:cart) }
+
+      it 'removes item from the cart' do
+        create(:cart_item, cart: cart, product: product, quantity: 2)
+
+        delete "/cart/#{product.id}", headers: { 'Cart-Token' => cart.session_token }, as: :json
+
+        expect(CartItem.count).to eq(0)
+      end
+    end
   end
 end
