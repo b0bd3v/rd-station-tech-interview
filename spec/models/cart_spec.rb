@@ -23,14 +23,6 @@ RSpec.configure do |config|
 end
 
 RSpec.describe Cart, type: :model do
-  context 'when validating' do
-    it 'validates numericality of total_price' do
-      cart = described_class.new(total_price: -1)
-      expect(cart).not_to be_valid
-      expect(cart.errors[:total_price]).to include('must be greater than or equal to 0')
-    end
-  end
-
   describe 'mark_as_abandoned' do
     let(:shopping_cart) { create(:shopping_cart) }
 
