@@ -14,3 +14,15 @@ Cart-Token: xxxx
 GET http://localhost:3000/cart
 Cart-Token: 2fe6206fbed31b7052bd8ea344180b59
 Content-Type: application/json
+
+###
+
+POST http://localhost:3000/cart/add_item
+Cart-Token: 2fe6206fbed31b7052bd8ea344180b59
+Content-Type: application/json
+
+{
+  "product_id": 2,
+  "quantity": 5
+}
+

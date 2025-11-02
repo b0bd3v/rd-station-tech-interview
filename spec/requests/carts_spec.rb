@@ -85,5 +85,28 @@ RSpec.describe '/carts', type: :request do
                       'total_price' => 7.96)
       end
     end
+
+    describe 'POST /cart/add_item' do
+      let!(:product) { create(:product, name: 'Test Product', price: 10.0) }
+      let!(:cart) { create(:cart) }
+
+      it 'adds item to the cart' do
+        post '/cart/add_item', headers: { 'Cart-Token' => cart.session_token },
+                               params: { product_id: product.id, quantity: 3 }, as: :json
+
+        expect(CartItem.count).to eq(1)
+      end
+
+      it 'adds existing item to the cart' do
+        cart_item = create(:cart_item, cart: cart, product: product, quantity: 2)
+
+        post '/cart/add_item', headers: { 'Cart-Token' => cart.session_token },
+                               params: { product_id: product.id, quantity: 3 }, as: :json
+
+        expect(CartItem.count).to eq(1)
+        expect(CartItem.first.quantity).to eq(5)
+        expect(CartItem.first.total_price).to eq(50.0)
+      end
+    end
   end
 end

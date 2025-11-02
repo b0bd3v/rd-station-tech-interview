@@ -11,4 +11,5 @@ Rails.application.routes.draw do
 
   post 'cart' => 'carts#create'
   get 'cart' => 'carts#show'
+  post 'cart/add_item' => 'carts#add_item'
 end
