@@ -1,30 +1,64 @@
+# Variáveis de ambiente
+@cart_token = 2bc78c89cd0d878162c0b9a6cf02f0ed
+@url = http://localhost:3000
 
-
-POST http://localhost:3000/cart
+### @name create_cart_without_token
+# Cria um novo carrinho e adiciona um item.
+# Quando não é usado o header Cart-Token um novo carrinho é criado.
+#
+# O token é retornado no header Cart-Token da response. Preencha
+# a variável cart_token com esse token.
+POST {{url}}/cart
 Content-Type: application/json
-Cart-Token: 423cd24bc1cb18a92bf7cf7e4eeb1dc3
 
 {
   "product_id": 1,
   "quantity": 2
 }
-###
 
-GET http://localhost:3000/cart
-Cart-Token: 423cd24bc1cb18a92bf7cf7e4eeb1dc3
-Content-Type: application/json
-###
 
-POST http://localhost:3000/cart/add_item
-Cart-Token: 423cd24bc1cb18a92bf7cf7e4eeb1dc3
+### @name add_item_to_existing_cart
+# Adiciona um item ao carrinho existente usando o Cart-Token
+POST {{url}}/cart
 Content-Type: application/json
+Cart-Token: {{cart_token}}
 
 {
   "product_id": 1,
+  "quantity": 2
+}
+
+### @name get_cart
+# Retorna dos dados do carrinho
+# Use o header Cart-Token para identificar o carrinho
+GET {{url}}/cart
+Cart-Token: {{cart_token}}
+Content-Type: application/json
+
+### @name add_item
+# Adiciona um item no carrinho existente usando o Cart-Token
+POST {{url}}/cart/add_item
+Cart-Token: {{cart_token}}
+Content-Type: application/json
+
+{
+  "product_id": 2,
   "quantity": 5
 }
-###
 
-DELETE http://localhost:3000/cart/2
-Cart-Token: 423cd24bc1cb18a92bf7cf7e4eeb1dc3
+### @name add_item_different_product
+# Adiciona um item no carrinho existente usando o Cart-Token
+POST {{url}}/cart/add_item
+Cart-Token: {{cart_token}}
+Content-Type: application/json
+
+{
+  "product_id": 3,
+  "quantity": 12
+}
+
+### @name remove_item
+# Remove um item do carrinho utilizando o id do produto
+DELETE {{url}}/cart/1
+Cart-Token: {{cart_token}}
 Content-Type: application/json
