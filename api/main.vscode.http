@@ -1,0 +1,62 @@
+@baseUrl = http://localhost:3000
+@cart_token = 9c56b7ee0974c1e112da42c5985629b7
+
+### @name create_cart_without_token
+# Cria um novo carrinho e adiciona um item.
+# Quando não é usado o header Cart-Token um novo carrinho é criado.
+#
+# O token é retornado no header Cart-Token da response. Preencha
+# a variável cart_token com esse token.
+POST {{baseUrl}}/cart
+Content-Type: application/json
+
+{
+  "product_id": 1,
+  "quantity": 2
+}
+
+### @name add_item_to_existing_cart
+# Adiciona um item ao carrinho existente usando o Cart-Token
+POST {{baseUrl}}/cart
+Content-Type: application/json
+Cart-Token: {{cart_token}}
+
+{
+  "product_id": 1,
+  "quantity": 2
+}
+
+### @name get_cart
+# Retorna dos dados do carrinho
+# Use o header Cart-Token para identificar o carrinho
+GET {{baseUrl}}/cart
+Content-Type: application/json
+Cart-Token: {{cart_token}}
+
+### @name add_item
+# Adiciona um item no carrinho existente usando o Cart-Token
+POST {{baseUrl}}/cart/add_item
+Content-Type: application/json
+Cart-Token: {{cart_token}}
+
+{
+  "product_id": 2,
+  "quantity": 5
+}
+
+### @name add_item_different_product
+# Adiciona um item no carrinho existente usando o Cart-Token
+POST {{baseUrl}}/cart/add_item
+Content-Type: application/json
+Cart-Token: {{cart_token}}
+
+{
+  "product_id": 3,
+  "quantity": 12
+}
+
+### @name remove_item
+# Remove um item do carrinho utilizando o id do produto
+DELETE {{baseUrl}}/cart/1
+Content-Type: application/json
+Cart-Token: {{cart_token}}

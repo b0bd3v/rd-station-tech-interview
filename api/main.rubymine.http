@@ -1,5 +1,4 @@
 # Variáveis de ambiente
-@cart_token = 2bc78c89cd0d878162c0b9a6cf02f0ed
 @url = http://localhost:3000
 
 ### @name create_cart_without_token
@@ -8,6 +7,7 @@
 #
 # O token é retornado no header Cart-Token da response. Preencha
 # a variável cart_token com esse token.
+# IMPORTANTE: o token que a response irá retornar será automaticamente utilizada nas outras requests
 POST {{url}}/cart
 Content-Type: application/json
 
@@ -16,6 +16,10 @@ Content-Type: application/json
   "quantity": 2
 }
 
+> {%
+    const token = response.headers.valueOf("Cart-Token");
+    if (token) { client.global.set("cart_token", token); }
+%}
 
 ### @name add_item_to_existing_cart
 # Adiciona um item ao carrinho existente usando o Cart-Token
