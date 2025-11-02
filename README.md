@@ -60,8 +60,8 @@ Nota: Atualmente a <span style="color:#ff5a00"><strong>cobertura está em 100%</
 
 ### Swagger
 1. Execute o docker compose com o serviço web:
-   - `docker compose up swagger`
-2. Acesse `http://localhost:3000/api-docs` para visualizar a documentação.
+   - `docker compose up swagger` O comando já irá subir db, redis e web.
+2. Acesse `http://localhost:8080` para visualizar a documentação.
 
 ![Swagger UI](api/swagger.gif)
 
