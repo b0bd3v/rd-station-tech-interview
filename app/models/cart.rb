@@ -23,6 +23,7 @@ class Cart < ApplicationRecord
 
   before_validation :create_session_token, on: :create
   before_save :update_total_price
+  before_save :update_last_interaction, if: -> { cart_items.any? }
 
   def mark_as_abandoned
     update(abandoned_at: Time.current)
@@ -40,6 +41,10 @@ class Cart < ApplicationRecord
 
   def update_total_price
     self.total_price = cart_items.sum(:total_price).round(2)
+  end
+
+  def update_last_interaction
+    self.last_interaction_at = Time.zone.now
   end
 
   def create_session_token

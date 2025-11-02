@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module CartServices
   class RemoveItem
     def self.call(cart:, product:)

@@ -30,15 +30,9 @@ class CartsController < ApplicationController
   end
 
   def add_item
-    @cart = Cart.find_by(session_token: request.headers['Cart-Token'])
-    raise ActiveRecord::RecordNotFound unless @cart
-
+    find_cart_by_token
     product = Product.find(item_params[:product_id])
-    result = CartServices::AddItem.call(cart: @cart, product: product, quantity: item_params[:quantity])
-
-    return render json: @cart, serializer: ::CartSerializer, status: :created if result
-
-    render json: @cart.errors, status: :unprocessable_entity
+    process_add_item(product)
   rescue ActiveRecord::RecordNotFound
     render json: {}, status: :not_found
   rescue StandardError => e
@@ -66,14 +60,29 @@ class CartsController < ApplicationController
   def find_or_create_cart
     @cart = Cart.find_by(session_token: request.headers['Cart-Token'])
 
-    if @cart.nil?
-      @cart = Cart.new(total_price: 0)
-      @cart.save!
-    end
+    return if @cart
+
+    @cart = Cart.new(total_price: 0)
+    @cart.save!
   end
 
   def cart_token
     response.set_header 'Cart-Token', @cart.session_token if @cart
+  end
+
+  def find_cart_by_token
+    @cart = Cart.find_by(session_token: request.headers['Cart-Token'])
+    raise ActiveRecord::RecordNotFound unless @cart
+  end
+
+  def process_add_item(product)
+    result = CartServices::AddItem.call(cart: @cart, product: product, quantity: item_params[:quantity])
+
+    if result
+      render json: @cart, serializer: ::CartSerializer, status: :created
+    else
+      render json: @cart.errors, status: :unprocessable_entity
+    end
   end
 
   def item_params

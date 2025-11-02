@@ -157,7 +157,7 @@ RSpec.describe '/carts', type: :request do
     end
 
     it 'adds existing item to the cart' do
-      cart_item = create(:cart_item, cart: cart, product: product, quantity: 2)
+      create(:cart_item, cart: cart, product: product, quantity: 2)
 
       post '/cart/add_item', headers: { 'Cart-Token' => cart.session_token },
                              params: { product_id: product.id, quantity: 3 }, as: :json
@@ -228,7 +228,7 @@ RSpec.describe '/carts', type: :request do
 
     context 'when item not exist' do
       it 'returns a 404 status' do
-        delete "/cart/#{999}", headers: { 'Cart-Token' => cart.session_token }, as: :json
+        delete '/cart/999', headers: { 'Cart-Token' => cart.session_token }, as: :json
 
         expect(response).to have_http_status(:not_found)
       end
