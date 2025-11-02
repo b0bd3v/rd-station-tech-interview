@@ -17,8 +17,6 @@
 #  index_carts_on_session_token  (session_token)
 #
 class Cart < ApplicationRecord
-  validates :total_price, numericality: { greater_than_or_equal_to: 0 }
-
   has_many :cart_items, dependent: :destroy
 
   before_validation :create_session_token, on: :create
